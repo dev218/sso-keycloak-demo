@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+ mysql:
+  logging:
+    driver: none
+  restart: always 
+  image: mysql:5.7
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: keycloak
+    MYSQL_USER: keycloak
+    MYSQL_PASSWORD: password 
+  ports:
+    - "3306:3306"
+  networks:
+    - docker
+
+ keycloak:
+  restart: always 
+  image: jboss/keycloak:4.8.3.Final
+  environment:
+    DB_VENDOR: MYSQL
+    DB_ADDR: mysql
+    DB_DATABASE: keycloak
+    DB_USER: keycloak
+    DB_PASSWORD: password
+    KEYCLOAK_USER: admin
+    KEYCLOAK_PASSWORD: 123456
+  ports:
+    - "8080:8080"
+  depends_on:
+    - mysql
+  networks:
+    - docker
+
+networks:
+  docker:
+    driver: bridge
